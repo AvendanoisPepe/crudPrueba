@@ -6,8 +6,6 @@ Este proyecto permite registrar, editar, eliminar y cuenta con generación autom
 
 ## ✍️ Proceso de desarrollo
 
-_Aquí puedes escribir tu experiencia, decisiones técnicas, retos superados, y aprendizajes. Por ejemplo:_
-
 > Este proyecto lo desarrollé en un día, priorizando funcionalidad y claridad. Usé PHP con el patrón MVC básico, integré Tailwind para estilos rápidos y limpios, y documenté cada método para facilitar el mantenimiento. Aprendí a generar PDF con FPDF y a validar correos en tiempo real. También reforcé el uso de controladores y vistas separadas, he de admitir que estaba muy oxidado en cuestión de PHP y sus funciones, pero di un esfuerzo en cumplir y generar de forma correcta lo solicitado.
 
 ---
