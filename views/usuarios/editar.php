@@ -1,5 +1,4 @@
 <?php
-// views/usuarios/editar.php
 $hoy = date('Y-m-d');
 ?>
 <!DOCTYPE html>

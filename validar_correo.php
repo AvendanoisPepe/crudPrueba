@@ -1,5 +1,5 @@
 <?php
-// validar_correo.php (colocar en la raíz del proyecto)
+// Incluir configuración de base de datos y modelo de Usuario
 require_once 'config/database.php';
 require_once 'models/Usuario.php';
 
@@ -7,6 +7,7 @@ $database = new Database();
 $db = $database->getConnection();
 $usuario = new Usuario($db);
 
+// Obtener el correo desde la URL (GET), o cadena vacía si no se proporciona
 $correo = $_GET['correo'] ?? '';
 
 header('Content-Type: application/json; charset=utf-8');
@@ -17,6 +18,7 @@ if (!$correo) {
 }
 
 try {
+    // Verificar si el correo existe en la base de datos
     $existe = $usuario->existeCorreo($correo);
     echo json_encode(['existe' => $existe]);
 } catch (Exception $e) {

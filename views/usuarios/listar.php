@@ -1,12 +1,11 @@
 <?php
-// views/usuarios/listar.php
-// Asume que $stmt viene desde el controlador (UsuarioController::index)
-// y es un PDOStatement con los usuarios y nombre_cargo (JOIN)
+// $stmt viene desde el controlador (UsuarioController)
 
 $year = date('Y');
 
 // Traer festivos (si falla la petición, $festivos quedará vacío)
 $festivos = [];
+// Construir la URL de la API con el año actual
 $apiUrl = "https://api-colombia.com/api/v1/holiday/year/{$year}";
 $response = @file_get_contents($apiUrl);
 if ($response !== false) {
@@ -18,6 +17,7 @@ if ($response !== false) {
     }
 }
 
+// Función que calcula los días hábiles desde una fecha de ingreso hasta hoy
 function calcularDiasHabiles($fechaInicio, $festivos) {
   $inicio = new DateTime($fechaInicio);
   $hoy = new DateTime();
@@ -27,9 +27,9 @@ function calcularDiasHabiles($fechaInicio, $festivos) {
 
   // empezar a contar desde el día siguiente a la fecha de ingreso
   $inicio->modify('+1 day');
-
+  // Recorrer cada día hasta hoy
   while ($inicio <= $hoy) {
-      $n = (int)$inicio->format('N'); // 1 = lunes ... 7 = domingo
+      $n = (int)$inicio->format('N');
       $s = $inicio->format('Y-m-d');
       if ($n < 6 && !in_array($s, $festivos)) {
           $dias++;
@@ -72,7 +72,10 @@ function calcularDiasHabiles($fechaInicio, $festivos) {
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-100">
-        <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)):
+        <?php
+        $hayDatos = false;
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)):
+          $hayDatos = true;
           $id = htmlspecialchars($row['id']);
           $nombre = htmlspecialchars($row['nombre']);
           $correo = htmlspecialchars($row['correo_electronico']);
@@ -103,6 +106,13 @@ function calcularDiasHabiles($fechaInicio, $festivos) {
           </td>
         </tr>
         <?php endwhile; ?>
+        <?php if (!$hayDatos): ?>
+          <tr>
+            <td colspan="8" class="px-4 py-6 text-center text-gray-500 italic">
+              No hay datos ingresados, genera un nuevo usuario.
+            </td>
+          </tr>
+        <?php endif; ?>
       </tbody>
     </table>
   </div>
@@ -126,7 +136,7 @@ function calcularDiasHabiles($fechaInicio, $festivos) {
           cancelButtonText: 'Cancelar'
         }).then((result) => {
           if (result.isConfirmed) {
-            form.submit(); // 👈 ahora sí enviamos el form
+            form.submit();
           }
         });
       });

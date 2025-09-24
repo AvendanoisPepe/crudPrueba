@@ -1,5 +1,4 @@
 <?php
-// views/usuarios/crear.php
 // $roles viene desde el controlador
 $hoy = date('Y-m-d');
 ?>
