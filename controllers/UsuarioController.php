@@ -1,6 +1,5 @@
 <?php
 require_once "models/Usuario.php";
-// require_once 'libs/fpdf/fpdf.php';
 require_once __DIR__ . '/../libs/fpdf/fpdf.php';
 
 class UsuarioController {
@@ -28,7 +27,6 @@ class UsuarioController {
         include __DIR__ . "/../views/usuarios/crear.php";
     }
 
-
     // Guardar usuario
     public function guardar($post, $files) {
         $usuario = new Usuario($this->db);
@@ -45,7 +43,8 @@ class UsuarioController {
             $firmaPath = "public/firmas/firma_$id.png";
             if (!is_dir("public/firmas")) mkdir("public/firmas", 0777, true);
             move_uploaded_file($files['firma']['tmp_name'], $firmaPath);
-    
+            // Guardar ruta de firma en DB
+            $usuario->guardarFirma($id, $firmaPath);
             // Generar contrato PDF
             $contratoPath = "public/contratos/contrato_$id.pdf";
             if (!is_dir("public/contratos")) mkdir("public/contratos", 0777, true);
@@ -59,7 +58,6 @@ class UsuarioController {
             header("Location: index.php?msg=error");
         }
     }
-    
     
     public function editar() {
         $id = $_GET['id'] ?? null;
@@ -96,6 +94,7 @@ class UsuarioController {
             header("Location: index.php?action=index");
         }
     }
+
     public function eliminar($post) {
         if (empty($post['id'])) {
             header("Location: index.php?msg=error");
@@ -112,6 +111,7 @@ class UsuarioController {
         }
         exit;
     }
+
     private function generarContrato($usuario, $firmaPath, $contratoPath) {
         $pdf = new FPDF();
         $pdf->AddPage();
@@ -125,6 +125,11 @@ class UsuarioController {
         $pdf->SetFont('Arial','',12);
         $pdf->Cell(0,10,"Nombre: " . $usuario->nombre,0,1);
         $pdf->Cell(0,10,"Correo: " . $usuario->correo_electronico,0,1);
+        $pdf->Cell(0,10,"Fecha de ingreso: " . $usuario->fecha_ingreso,0,1);
+       
+        $rolTexto = ($usuario->id_rol == 1) ? "Empleado" : "Jefe";
+        $pdf->Cell(0,10,"Rol: " . $rolTexto,0,1);
+       
         $pdf->Ln(20);
     
         // Firma

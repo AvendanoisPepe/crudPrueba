@@ -78,5 +78,19 @@ class Usuario {
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
-    
+    public function guardarFirma($id, $firmaPath) {
+        $query = "UPDATE " . $this->table_name . " SET firma = :firma WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':firma', $firmaPath);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+    public function existeCorreo($correo) {
+        $query = "SELECT COUNT(*) FROM " . $this->table_name . " WHERE correo_electronico = :correo";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':correo', $correo);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
+    }
+
 }
